@@ -90,9 +90,7 @@
         <executions>
           <execution>
             <id>main-execution</id>
-            <!--
             <phase>compile</phase>
-            -->
             <goals>
               <goal>java</goal>
             </goals>
