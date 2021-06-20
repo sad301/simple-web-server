@@ -89,36 +89,71 @@
 				<version>3.0.0</version>
 				<executions>
 					<execution>
-						<id>main-execution</id>
-						<!--
-						<phase>compile</phase>
-					-->
-					<goals>
-						<goal>java</goal>
-					</goals>
-					<configuration>
-						<mainClass>webserver/com.sad301.webserver.App</mainClass>
-					</configuration>
-				</execution>
-			</executions>
-		</plugin>
-		<!-- dependencies -->
-		<plugin>
-			<groupId>org.apache.maven.plugins</groupId>
-			<artifactId>maven-dependency-plugin</artifactId>
-			<version>3.2.0</version>
-			<!--
-			<executions>
-			<execution>
-			<id>copy-dependencies</id>
-			<phase>package</phase>
-			<goals>
-			<goal>copy-dependencies</goal>
-		</goals>
-	</execution>
-</executions>
--->
-		</plugin>
-	</plugins>
+						<goals>
+							<goal>exec</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<executable>java</executable>
+					<arguments>
+						<argument>-classpath</argument>
+						<classpath/>
+						<argument>com.sad301.webserver.App</argument>
+					</arguments>
+				</configuration>
+			</plugin>
+			<!-- dependencies -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<version>3.2.0</version>
+				<executions>
+					<execution>
+						<id>copy-dependencies</id>
+						<phase>package</phase>
+						<goals>
+							<goal>copy-dependencies</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<!-- antrun -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<version>3.0.0</version>
+				<executions>
+					<execution>
+						<phase>clean</phase>
+						<goals>
+							<goal>run</goal>
+						</goals>
+						<configuration>
+							<target>
+								<delete dir="dist"/>
+							</target>
+						</configuration>
+					</execution>
+					<execution>
+						<id>main-antrun</id>
+						<phase>pre-integration-test</phase>
+						<goals>
+							<goal>run</goal>
+						</goals>
+						<configuration>
+							<target>
+								<mkdir dir="dist/lib"/>
+								<move todir="dist/lib">
+									<file name="target/${project.artifactId}-${project.version}.jar"/>
+									<fileset dir="target/dependency"/>
+								</move>
+								<copy todir="dist" file="src/main/batch/${project.artifactId}.bat"/>
+							</target>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
 	</build>
 </project>
